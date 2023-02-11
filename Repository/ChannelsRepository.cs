@@ -30,7 +30,7 @@ namespace ChannelService.Repository
                 return null;
             }
 
-            channel.Members = await GetMembersFromChannel(channelSql);
+            channel.Members = await GetMembersFromChannel(id);
 
             return channel;
         }
