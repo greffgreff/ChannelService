@@ -7,7 +7,10 @@
         public string Name { get; set; }
         public string Image { get; set; }
         public string EncryptionKey { get; set; }
-        public ChannelUser[] Memebers { get; set; }
-        public DateTime CreatationDate { get; set; }
+        public Memeber[] Memebers { get; set; }
+        public Message[] Messages { get; set; }
+        public DateTime CreationDate { get; set; }
+        public DateTime EditDate { get; set; }
+        public DateTime DeletionDate { get; set; }
     }
 }

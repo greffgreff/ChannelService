@@ -17,15 +17,37 @@ namespace ChannelService.Repository
         {
             using var connection = factory.GetOpenConnection();
 
-            var channel = await connection.QueryFirstOrDefaultAsync<Channel>("SELECT * FROM Channels WHERE Id = @Id FETCH FIRST 1 ROWS ONLY", new { Id = id });
+            const string channelSql = @"SELECT * FROM Channels WHERE Id = @Id AND DeletionDate IS NULL FETCH FIRST 1 ROWS ONLY";
+            object channelParameters = new { Id = id };
+            var channel = await connection.QueryFirstOrDefaultAsync<Channel>(channelSql, channelParameters);
 
             if (channel == null)
             {
                 return null;
             }
 
-            var channelUsers = await connection.QueryAsync<ChannelUser>("SELECT *, UserId AS Id FROM ChannelUsers WHERE ChannelId = @ChannelId", new { ChannelId = id });
-            channel.Memebers = channelUsers.ToArray();
+            const string memebersSql = @"SELECT * FROM ChannelMemebers WHERE ChannelId = @ChannelId";
+            object memebersParameters = new { ChannelId = id };
+            var memebers = await connection.QueryAsync<Memeber>(memebersSql, memebersParameters);
+
+            if (memebers.Any())
+            {
+                channel.Memebers = memebers.ToArray();
+            }
+
+            const string chatSql = @"
+                SELECT *
+                FROM ChatHistory h
+                INNER JOIN ChannelMemebers m ON h.Author = m.Id
+                INNER JOIN Channels c ON m.ChannelId = c.Id
+                WHERE c.Id = @ChannelId";
+            object chatParameters = new { ChannelId = id };
+            var messages = await connection.QueryAsync<Message>(chatSql, chatParameters);
+
+            if (messages.Any())
+            {
+                channel.Messages = messages.ToArray();
+            }
 
             return channel;
         }
@@ -37,13 +59,14 @@ namespace ChannelService.Repository
             object parameters = new { UserId = userId };
             const string sql = @"
                 SELECT * FROM Channels c
-                INNER JOIN ChannelUsers u ON c.Id = u.ChannelId
+                INNER JOIN ChannelMemebers m ON c.Id = m.ChannelId
                 WHERE c.Id IN (
-	                SELECT Id FROM Channels c
-	                INNER JOIN ChannelUsers u ON c.Id = u.ChannelId
-	                WHERE u.UserId = @UserId)";
+	                SELECT c.Id FROM Channels c
+	                INNER JOIN ChannelMemebers m ON c.Id = m.ChannelId
+	                INNER JOIN Users u ON m.UserId = u.Id
+	                WHERE u.Id = @UserId)";
 
-            var result = await connection.QueryAsync<ChannelUser, Channel, Channel>(
+            var result = await connection.QueryAsync<Memeber, Channel, Channel>(
                 sql, 
                 (user, channel) => { // TODO not working
                     channel.Memebers = new[] { user };

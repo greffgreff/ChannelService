@@ -36,14 +36,14 @@ namespace ChannelService.Controllers
                     EncryptionKey = "1234 1234 1234 1234 1234 1234",
                     Memebers = new[]
                     {
-                        new ChannelUser
+                        new Memeber
                         {
                             Id = userId,
                             Nickname = "User 1",
                             Image = "",
                             Role = RoleType.Memeber
                         },
-                        new ChannelUser
+                        new Memeber
                         {
                             Id = Guid.NewGuid().ToString(),
                             Nickname = "User 2",
@@ -61,21 +61,21 @@ namespace ChannelService.Controllers
                     EncryptionKey = "1234 1234 1234 1234 1234 1234",
                     Memebers = new[]
                     {
-                        new ChannelUser
+                        new Memeber
                         {
                             Id = userId,
                             Nickname = "User 1",
                             Image = "",
                             Role = RoleType.Memeber
                         },
-                        new ChannelUser
+                        new Memeber
                         {
                             Id = Guid.NewGuid().ToString(),
                             Nickname = "User 2",
                             Image = "",
                             Role = RoleType.Moderator
                         },
-                        new ChannelUser
+                        new Memeber
                         {
                             Id = Guid.NewGuid().ToString(),
                             Nickname = "User 3",
