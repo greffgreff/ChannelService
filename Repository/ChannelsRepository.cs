@@ -30,33 +30,48 @@ namespace ChannelService.Repository
                 return null;
             }
 
+            channel.Members = await GetMembersFromChannel(channelSql);
+
+            return channel;
+        }
+
+        public async Task<Member[]> GetMembersFromChannel(string channelId)
+        {
+            using var connection = factory.GetOpenConnection();
+
             const string membersSql = @"
                 SELECT * 
                 FROM ChannelMembers 
                 WHERE ChannelId = @ChannelId AND LeaveDate IS NULL";
 
-            var members = await connection.QueryAsync<Member>(membersSql, new { ChannelId = id });
+            var members = await connection.QueryAsync<Member>(membersSql, new { ChannelId = channelId });
 
-            if (members.Any())
-            {
-                channel.Members = members.ToArray();
-            }
+            return members.ToArray();
+        }
 
-            const string chatSql = @"
+        public async Task<ChatEntry[]> GetChatEntriesFromChannel(string channelId, int count = 100, int offset = 0)
+        {
+            using var connection = factory.GetOpenConnection();
+
+            const string sql = @"
                 SELECT *
-                FROM ChatHistory h
-                INNER JOIN ChannelMembers m ON h.Author = m.Id
+                FROM ChatEntries e
+                INNER JOIN ChannelMembers m ON e.Author = m.Id
                 INNER JOIN Channels c ON m.ChannelId = c.Id
-                WHERE c.Id = @ChannelId AND h.DeletionDate IS NULL";
+                WHERE c.Id = @ChannelId
+                ORDER BY SendDate DESC
+                LIMIT @Count OFFSET @Offset";
 
-            var messages = await connection.QueryAsync<Message>(chatSql, new { ChannelId = id });
-
-            if (messages.Any())
+            var param = new 
             {
-                channel.Messages = messages.ToArray();
-            }
+                ChannelId = channelId,
+                Count = count,
+                Offset = offset
+            };
 
-            return channel;
+            var entries = await connection.QueryAsync<ChatEntry>(sql, param);
+
+            return entries.ToArray();
         }
 
         public async Task<Channel[]> GetChannelsFromUser(string userId)
