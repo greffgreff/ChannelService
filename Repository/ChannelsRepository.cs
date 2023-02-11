@@ -30,22 +30,22 @@ namespace ChannelService.Repository
                 return null;
             }
 
-            const string memebersSql = @"
+            const string membersSql = @"
                 SELECT * 
-                FROM ChannelMemebers 
+                FROM ChannelMembers 
                 WHERE ChannelId = @ChannelId";
 
-            var memebers = await connection.QueryAsync<Memeber>(memebersSql, new { ChannelId = id });
+            var members = await connection.QueryAsync<Member>(membersSql, new { ChannelId = id });
 
-            if (memebers.Any())
+            if (members.Any())
             {
-                channel.Memebers = memebers.ToArray();
+                channel.Members = members.ToArray();
             }
 
             const string chatSql = @"
                 SELECT *
                 FROM ChatHistory h
-                INNER JOIN ChannelMemebers m ON h.Author = m.Id
+                INNER JOIN ChannelMembers m ON h.Author = m.Id
                 INNER JOIN Channels c ON m.ChannelId = c.Id
                 WHERE c.Id = @ChannelId AND h.DeletionDate IS NULL";
 
@@ -73,10 +73,10 @@ namespace ChannelService.Repository
 	                INNER JOIN Users u ON m.UserId = u.Id
 	                WHERE u.Id = @UserId)";
 
-            var result = await connection.QueryAsync<Memeber, Channel, Channel>(
+            var result = await connection.QueryAsync<Member, Channel, Channel>(
                 sql, 
                 (user, channel) => { // TODO not working
-                    channel.Memebers = new[] { user };
+                    channel.Members = new[] { user };
                     return channel;
                 }, 
                 parameters);

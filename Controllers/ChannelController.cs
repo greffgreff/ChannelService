@@ -34,16 +34,16 @@ namespace ChannelService.Controllers
                     Name = "Channel Name 1",
                     Image = "https://i.imgur.com/gxPewqw.jpg",
                     EncryptionKey = "1234 1234 1234 1234 1234 1234",
-                    Memebers = new[]
+                    Members = new[]
                     {
-                        new Memeber
+                        new Member
                         {
                             Id = userId,
                             Nickname = "User 1",
                             Image = "",
                             Role = RoleType.Memeber
                         },
-                        new Memeber
+                        new Member
                         {
                             Id = Guid.NewGuid().ToString(),
                             Nickname = "User 2",
@@ -59,23 +59,23 @@ namespace ChannelService.Controllers
                     Name = "Channel Name 2",
                     Image = "https://i.imgur.com/gxPewqw.jpg",
                     EncryptionKey = "1234 1234 1234 1234 1234 1234",
-                    Memebers = new[]
+                    Members = new[]
                     {
-                        new Memeber
+                        new Member
                         {
                             Id = userId,
                             Nickname = "User 1",
                             Image = "",
                             Role = RoleType.Memeber
                         },
-                        new Memeber
+                        new Member
                         {
                             Id = Guid.NewGuid().ToString(),
                             Nickname = "User 2",
                             Image = "",
                             Role = RoleType.Moderator
                         },
-                        new Memeber
+                        new Member
                         {
                             Id = Guid.NewGuid().ToString(),
                             Nickname = "User 3",

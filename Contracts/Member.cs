@@ -1,6 +1,6 @@
 ﻿namespace ChannelService.Contracts
 {
-    public class Memeber
+    public class Member
     {
         public string Id { get; set; }
         public string Nickname { get; set; }
