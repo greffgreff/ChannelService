@@ -44,7 +44,7 @@ namespace ChannelService.Controllers
 
             string protocol = HttpContext.Request.IsHttps ? "https" : "http";
             string host = HttpContext.Request.Host.Value;
-            string baseUrl = $@"{protocol}://{host}/channels/{id}/history";
+            string baseUrl = $@"{protocol}://{host}/channels/{id}/chat";
 
             var history = new ChatHistory
             {
