@@ -48,7 +48,6 @@ namespace ChannelService.Controllers
 
             var history = new ChatHistory
             {
-                CurrentPage = @$"{baseUrl}?count={count}&offset={offset}",
                 NextPage = entries.Length < count ? null : @$"{baseUrl}?count={count}&offset={offset+count}",
                 PreviousPage = offset - count < 0 ? null : @$"{baseUrl}?count={count}&offset={offset-count}",
                 Entries = entries,
