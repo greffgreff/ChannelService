@@ -18,8 +18,7 @@ namespace ChannelService.Repository
             using var connection = factory.GetOpenConnection();
 
             const string channelSql = @"SELECT * FROM Channels WHERE Id = @Id AND DeletionDate IS NULL FETCH FIRST 1 ROWS ONLY";
-            object channelParameters = new { Id = id };
-            var channel = await connection.QueryFirstOrDefaultAsync<Channel>(channelSql, channelParameters);
+            var channel = await connection.QueryFirstOrDefaultAsync<Channel>(channelSql, new { Id = id });
 
             if (channel == null)
             {
@@ -27,8 +26,7 @@ namespace ChannelService.Repository
             }
 
             const string memebersSql = @"SELECT * FROM ChannelMemebers WHERE ChannelId = @ChannelId";
-            object memebersParameters = new { ChannelId = id };
-            var memebers = await connection.QueryAsync<Memeber>(memebersSql, memebersParameters);
+            var memebers = await connection.QueryAsync<Memeber>(memebersSql, new { ChannelId = id });
 
             if (memebers.Any())
             {
@@ -41,8 +39,7 @@ namespace ChannelService.Repository
                 INNER JOIN ChannelMemebers m ON h.Author = m.Id
                 INNER JOIN Channels c ON m.ChannelId = c.Id
                 WHERE c.Id = @ChannelId";
-            object chatParameters = new { ChannelId = id };
-            var messages = await connection.QueryAsync<Message>(chatSql, chatParameters);
+            var messages = await connection.QueryAsync<Message>(chatSql, new { ChannelId = id });
 
             if (messages.Any())
             {
