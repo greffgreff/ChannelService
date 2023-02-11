@@ -11,6 +11,5 @@
         public Message[] Messages { get; set; }
         public DateTime CreationDate { get; set; }
         public DateTime EditDate { get; set; }
-        public DateTime DeletionDate { get; set; }
     }
 }

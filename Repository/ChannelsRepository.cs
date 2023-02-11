@@ -33,7 +33,7 @@ namespace ChannelService.Repository
             const string membersSql = @"
                 SELECT * 
                 FROM ChannelMembers 
-                WHERE ChannelId = @ChannelId";
+                WHERE ChannelId = @ChannelId AND LeaveDate IS NULL";
 
             var members = await connection.QueryAsync<Member>(membersSql, new { ChannelId = id });
 
